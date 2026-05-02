@@ -8,7 +8,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #e8e8e8;
+    background: url('assets/background.jpeg') center/cover no-repeat fixed;
     font-family: 'Segoe UI', sans-serif;
     display: flex;
     flex-direction: column;
@@ -18,39 +18,65 @@
     padding: 0 12px 24px;
   }
 
-  /* ── 뉴모피즘 타이틀 ── */
-  .title-wrap { margin: 18px 0 10px; perspective: 600px; }
-  h1 {
-    font-size: 2.2rem; font-weight: 900; letter-spacing: 0.12em;
-    color: #c0c0c0;
-    text-shadow: -3px -3px 6px #fff, 3px 3px 8px rgba(0,0,0,.22);
-    background: linear-gradient(145deg, #ececec, #d8d8d8);
-    padding: 10px 34px; border-radius: 16px;
-    box-shadow: 8px 8px 18px rgba(0,0,0,.18), -6px -6px 14px rgba(255,255,255,.85);
-    transform: rotateX(12deg); user-select: none; text-transform: uppercase;
+  /* ── 타이틀 이미지 ── */
+  .title-wrap {
+    margin: 18px 0 10px;
+    perspective: 700px;
+    perspective-origin: 50% 80%;
+  }
+  #title-img {
+    display: block;
+    width: clamp(220px, 52vw, 360px);
+    height: auto;
+    transform: rotateX(10deg);
+    filter: drop-shadow(0 6px 18px rgba(0,0,0,.45))
+            drop-shadow(0 2px 4px rgba(0,0,0,.3));
+    user-select: none;
+    pointer-events: none;
   }
 
   /* ── 상단 바 ── */
   .top-bar {
     display: flex; align-items: center; gap: 12px;
-    margin-bottom: 8px; width: 100%; max-width: 440px; justify-content: flex-end;
+    margin-bottom: 8px; width: 100%; max-width: 480px; justify-content: flex-end;
     flex-wrap: wrap;
   }
   .status-pill {
-    background: #ddd;
-    box-shadow: 3px 3px 8px rgba(0,0,0,.15), -2px -2px 6px #fff;
-    border-radius: 20px; padding: 5px 14px; font-size: .78rem; color: #555;
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.35);
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    border-radius: 20px; padding: 5px 14px; font-size: .78rem; color: #fff;
     display: flex; align-items: center; gap: 6px;
   }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: #aaa; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.5); }
   .dot.active { background: #4caf50; box-shadow: 0 0 6px #4caf50; }
-  #timer-display { font-weight: 700; color: #333; font-size: .9rem; }
+  #timer-display {
+    font-weight: 700; color: #fff; font-size: .9rem;
+    text-shadow: 0 1px 6px rgba(0,0,0,.55);
+  }
+
+  /* ── 코인 카운터 ── */
+  #coin-display {
+    background: rgba(255,255,255,0.22);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.38);
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    border-radius: 20px; padding: 5px 14px;
+    font-size: .88rem; font-weight: 700; color: #fff;
+    text-shadow: 0 1px 5px rgba(0,0,0,.5);
+    display: flex; align-items: center; gap: 5px;
+  }
+  #coin-display img { width: 18px; height: 18px; object-fit: contain; }
 
   /* ── 카메라 ── */
   #cam-wrap {
     position: relative; width: 140px; height: 105px;
     border-radius: 12px; overflow: hidden;
-    box-shadow: 4px 4px 12px rgba(0,0,0,.2), -3px -3px 8px #fff;
+    box-shadow: 0 4px 20px rgba(0,0,0,.3);
+    border: 1px solid rgba(255,255,255,.3);
     background: #222; flex-shrink: 0;
   }
   #cam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
@@ -73,26 +99,9 @@
     transform-style: preserve-3d; will-change: transform;
   }
   #maze-canvas {
-    border-radius: 8px;
-    box-shadow: 10px 10px 30px rgba(0,0,0,.25), -6px -6px 18px rgba(255,255,255,.7);
+    border-radius: 12px;
+    box-shadow: 0 16px 48px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.22);
     will-change: box-shadow;
-  }
-
-  /* ── 키워드 팝업 ── */
-  .keyword-popup {
-    position: absolute;
-    background: rgba(30,30,30,.88);
-    color: #f0e8d8; font-size: .78rem;
-    padding: 6px 14px; border-radius: 20px;
-    pointer-events: none; white-space: nowrap;
-    animation: popFade 2.8s ease forwards;
-    z-index: 10; font-style: italic;
-  }
-  @keyframes popFade {
-    0%   { opacity: 0; transform: translateY(0)   scale(.8); }
-    12%  { opacity: 1; transform: translateY(-10px) scale(1); }
-    75%  { opacity: 1; }
-    100% { opacity: 0; transform: translateY(-26px) scale(.9); }
   }
 
   /* ── 클리어 오버레이 ── */
@@ -101,47 +110,69 @@
     display: flex; align-items: center; justify-content: center;
     z-index: 100; pointer-events: none; transition: background .6s;
   }
-  #clear-overlay.show { background: rgba(0,0,0,.55); pointer-events: all; }
+  #clear-overlay.show { background: rgba(0,0,0,.6); pointer-events: all; }
   #clear-card {
-    background: #e8e8e8; border-radius: 24px; padding: 44px 56px;
-    box-shadow: 16px 16px 40px rgba(0,0,0,.3), -10px -10px 28px rgba(255,255,255,.8);
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 28px; padding: 40px 52px;
+    box-shadow: 0 24px 64px rgba(0,0,0,.4);
     text-align: center;
     transform: scale(.5) translateY(60px); opacity: 0;
     transition: transform .5s cubic-bezier(.34,1.56,.64,1), opacity .4s;
   }
   #clear-overlay.show #clear-card { transform: scale(1) translateY(0); opacity: 1; }
-  #clear-card h2 {
-    font-size: 2.6rem; color: #333;
-    text-shadow: 2px 2px 4px rgba(0,0,0,.15), -1px -1px 3px rgba(255,255,255,.9);
-    margin-bottom: 14px;
+  #clear-img {
+    width: 300px; max-width: 78vw;
+    filter: drop-shadow(0 4px 24px rgba(0,0,0,.55));
+    display: block; margin: 0 auto 18px;
   }
-  #clear-card .clear-time  { font-size: 1.2rem; color: #666; margin-bottom: 6px; }
-  #clear-card .collected   { font-size: .9rem;  color: #999; margin-bottom: 28px; }
+  #clear-card .collected {
+    font-size: 1.15rem; font-weight: 700; color: #fff;
+    text-shadow: 0 1px 8px rgba(0,0,0,.6);
+    margin-bottom: 26px;
+  }
   #restart-btn {
-    background: #e0e0e0; border: none; border-radius: 14px;
-    padding: 12px 36px; font-size: 1rem; font-weight: 700; color: #444; cursor: pointer;
-    box-shadow: 5px 5px 12px rgba(0,0,0,.18), -4px -4px 10px rgba(255,255,255,.85);
-    transition: box-shadow .15s, transform .15s;
+    background: rgba(255,255,255,0.24);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 14px;
+    padding: 12px 36px; font-size: 1rem; font-weight: 700; color: #fff; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,.22);
+    transition: background .15s, transform .15s;
   }
   #restart-btn:hover {
-    box-shadow: 2px 2px 6px rgba(0,0,0,.18), -2px -2px 6px rgba(255,255,255,.85);
+    background: rgba(255,255,255,0.38);
     transform: scale(.97);
   }
 
   /* ── 기타 ── */
-  .hint    { margin-top: 8px; font-size: .74rem; color: #999; letter-spacing: .04em; }
+  .hint {
+    margin-top: 8px; font-size: .74rem;
+    color: rgba(255,255,255,.78); letter-spacing: .04em;
+    text-shadow: 0 1px 5px rgba(0,0,0,.5);
+  }
   .key-hint {
     position: absolute; bottom: 6px; right: 8px;
-    font-size: .68rem; color: #bbb;
+    font-size: .68rem; color: rgba(255,255,255,.62);
+    text-shadow: 0 1px 4px rgba(0,0,0,.5);
   }
 </style>
 </head>
 <body>
 
-<div class="title-wrap"><h1>Head Tilt Maze</h1></div>
+<div class="title-wrap">
+  <img id="title-img" src="assets/title.png" alt="Head Tilt Maze">
+</div>
 
 <div class="top-bar">
   <span id="timer-display">00:00</span>
+  <div id="coin-display">
+    <img src="assets/coin.png" alt="coin">
+    <span>Coin: </span><span id="coin-count">0</span>
+  </div>
   <div class="status-pill">
     <span class="dot" id="cam-dot"></span>
     <span id="cam-status">카메라 연결 중…</span>
@@ -163,9 +194,8 @@
 
 <div id="clear-overlay">
   <div id="clear-card">
-    <h2>✦ Game Clear! ✦</h2>
-    <div class="clear-time"      id="clear-time-txt"></div>
-    <div class="collected"       id="clear-collected-txt"></div>
+    <img id="clear-img" src="assets/gameclear.png" alt="Game Clear">
+    <div class="collected" id="clear-collected-txt"></div>
     <button id="restart-btn" onclick="restartGame()">다시 도전</button>
   </div>
 </div>
@@ -210,16 +240,16 @@ function generateMaze(cols,rows,seed){
 }
 
 // ════════════════════════════════════
-//  키워드 노드 (감성 연출)
+//  코인 위치
 // ════════════════════════════════════
-const KEYWORDS = [
-  { text:"정적 — 소리 없는 순간",   cx:3,  cy:2  },
-  { text:"엇박자 — 어긋난 리듬",    cx:9,  cy:4  },
-  { text:"기시감 — 낯선 익숙함",    cx:5,  cy:7  },
-  { text:"여백 — 채워지지 않은 틈", cx:9,  cy:9  },
-  { text:"잔상 — 사라진 것의 흔적", cx:2,  cy:12 },
-  { text:"무심 — 스쳐가는 시선",    cx:8,  cy:14 },
-  { text:"틈새 — 사이에 숨쉬는 것", cx:4,  cy:16 },
+const COIN_DEFS = [
+  { cx:3,  cy:2  },
+  { cx:9,  cy:4  },
+  { cx:5,  cy:7  },
+  { cx:9,  cy:9  },
+  { cx:2,  cy:12 },
+  { cx:8,  cy:14 },
+  { cx:4,  cy:16 },
 ];
 
 // ════════════════════════════════════
@@ -232,20 +262,27 @@ canvas.width  = mazeW + OX * 2;
 canvas.height = mazeH + OY * 2;
 const GOAL_COL = COLS - 1, GOAL_ROW = ROWS - 1;
 
+// ── 이미지 에셋 ──
+const bgImg        = new Image(); bgImg.src        = 'assets/background.jpeg';
+const ballRightImg = new Image(); ballRightImg.src = 'assets/ball(right).png';
+const ballLeftImg  = new Image(); ballLeftImg.src  = 'assets/ball(left).png';
+const coinImg      = new Image(); coinImg.src      = 'assets/coin.png';
+const starImg      = new Image(); starImg.src      = 'assets/star.png';
+const pathTexImg   = new Image();
+let   pathPattern  = null;
+pathTexImg.onload  = () => { pathPattern = ctx.createPattern(pathTexImg, 'repeat'); };
+pathTexImg.src     = 'assets/path.png';
+
 // ════════════════════════════════════
 //  게임 상태
 // ════════════════════════════════════
 let ball = { x:0, y:0, vx:0, vy:0, r:9 };
-
-// 헤드트래킹 → raw 목표값 (face detection 스레드가 씀)
 let rawTiltX = 0, rawTiltY = 0;
-// 물리/렌더 루프가 실제로 쓰는 부드러운 값
 let tiltX = 0, tiltY = 0;
-// Pitch 자동 기준값 (적응형 calibration)
 let pitchBaseline = null;
-
 let startTime = null, elapsedMs = 0, cleared = false;
-let collectedKeywords = new Set(), visitedNodes = new Set();
+let coinCount = 0;
+let collectedCoins = new Set();
 
 function initGame(seed){
   MAZE = generateMaze(COLS, ROWS, seed || 42);
@@ -253,7 +290,8 @@ function initGame(seed){
   rawTiltX = rawTiltY = tiltX = tiltY = 0;
   pitchBaseline = null;
   startTime = null; elapsedMs = 0; cleared = false;
-  collectedKeywords.clear(); visitedNodes.clear();
+  coinCount = 0; collectedCoins.clear();
+  document.getElementById('coin-count').textContent = '0';
   document.getElementById('clear-overlay').classList.remove('show');
 }
 
@@ -263,35 +301,65 @@ function initGame(seed){
 function drawMaze(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // 배경
-  const bg = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
-  bg.addColorStop(0,'#f0f0f0'); bg.addColorStop(1,'#dcdcdc');
-  ctx.fillStyle = bg;
-  ctx.beginPath(); ctx.roundRect(0,0,canvas.width,canvas.height,12); ctx.fill();
+  // ── 캔버스 배경: background.jpeg (둥근 클립) ──
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(0,0,canvas.width,canvas.height,12); ctx.clip();
+  if(bgImg.complete && bgImg.naturalWidth){
+    ctx.drawImage(bgImg,0,0,canvas.width,canvas.height);
+  } else {
+    ctx.fillStyle='#c8b89a';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+  }
+  // 미로판 프레임: 반투명 흰색 — 배경이 은은하게 비침
+  ctx.fillStyle='rgba(255,255,255,0.52)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.restore();
 
-  // 감성 노드
-  for(const kw of KEYWORDS){
-    const px = OX + kw.cx*CELL + CELL/2;
-    const py = OY + kw.cy*CELL + CELL/2;
-    const done = visitedNodes.has(kw.text);
-    ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2);
-    ctx.fillStyle = done ? 'rgba(180,150,100,.4)' : 'rgba(150,120,80,.85)'; ctx.fill();
-    if(!done){
-      ctx.beginPath(); ctx.arc(px,py,9,0,Math.PI*2);
-      ctx.strokeStyle='rgba(150,120,80,.3)'; ctx.lineWidth=1.5; ctx.stroke();
+  // ── 미로 경로 텍스처 (path.png 반복 패턴) ──
+  ctx.save();
+  ctx.beginPath(); ctx.rect(OX,OY,mazeW,mazeH); ctx.clip();
+  if(pathPattern){
+    ctx.fillStyle=pathPattern;
+    ctx.fillRect(OX,OY,mazeW,mazeH);
+  } else {
+    ctx.fillStyle='rgba(215,195,155,0.92)';
+    ctx.fillRect(OX,OY,mazeW,mazeH);
+  }
+  ctx.restore();
+
+  // ── 코인 ──
+  const coinSize = CELL * 0.76;
+  for(let i=0; i<COIN_DEFS.length; i++){
+    if(collectedCoins.has(i)) continue;
+    const c = COIN_DEFS[i];
+    const px = OX + c.cx*CELL + CELL/2;
+    const py = OY + c.cy*CELL + CELL/2;
+    if(coinImg.complete && coinImg.naturalWidth){
+      ctx.drawImage(coinImg, px-coinSize/2, py-coinSize/2, coinSize, coinSize);
+    } else {
+      ctx.beginPath(); ctx.arc(px,py,8,0,Math.PI*2);
+      ctx.fillStyle='#f5c518'; ctx.fill();
     }
   }
 
-  // 탈출구
+  // ── 탈출구 (star.png 이미지) ──
   const gx=OX+GOAL_COL*CELL, gy=OY+GOAL_ROW*CELL;
-  const gg=ctx.createRadialGradient(gx+CELL/2,gy+CELL/2,2,gx+CELL/2,gy+CELL/2,CELL*.7);
-  gg.addColorStop(0,'rgba(80,200,120,.9)'); gg.addColorStop(1,'rgba(80,200,120,0)');
-  ctx.fillStyle=gg; ctx.fillRect(gx,gy,CELL,CELL);
-  ctx.font=`bold ${CELL*.72}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillStyle='#2e7d32'; ctx.fillText('★',gx+CELL/2,gy+CELL/2);
+  const gcx=gx+CELL/2, gcy=gy+CELL/2;
+  // 발광 후광 (배경 대비 강조)
+  const gg=ctx.createRadialGradient(gcx,gcy,2,gcx,gcy,CELL*.85);
+  gg.addColorStop(0,'rgba(255,230,80,.55)'); gg.addColorStop(1,'rgba(255,200,40,0)');
+  ctx.fillStyle=gg; ctx.fillRect(gx-CELL*.35,gy-CELL*.35,CELL*1.7,CELL*1.7);
+  // star.png (CELL * 1.6 크기, 중앙 정렬)
+  const starSize = CELL * 1.6;
+  if(starImg.complete && starImg.naturalWidth){
+    ctx.drawImage(starImg, gcx-starSize/2, gcy-starSize/2, starSize, starSize);
+  } else {
+    ctx.font=`bold ${CELL*.72}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle='#f5c518'; ctx.fillText('★',gcx,gcy);
+  }
 
-  // 벽
-  ctx.strokeStyle='#2a2a2a'; ctx.lineWidth=2.5; ctx.lineCap='square';
+  // ── 벽 (배경과 어우러지는 따뜻한 갈색) ──
+  ctx.strokeStyle='rgba(80,48,16,0.72)'; ctx.lineWidth=2.5; ctx.lineCap='square';
   for(let r=0;r<ROWS;r++){
     for(let c=0;c<COLS;c++){
       const x=OX+c*CELL, y=OY+r*CELL, w=MAZE[r][c];
@@ -304,41 +372,42 @@ function drawMaze(){
     }
   }
 
-  // 외곽 테두리
-  ctx.strokeStyle='#1a1a1a'; ctx.lineWidth=4;
+  // ── 외곽 테두리 (반투명 흰색) ──
+  ctx.strokeStyle='rgba(255,255,255,0.55)'; ctx.lineWidth=4;
   ctx.strokeRect(OX,OY,mazeW,mazeH);
 
-  // 입구 개방 (좌상단 위)
+  // ── 입구/출구 개방 ──
   ctx.clearRect(OX+2,OY-3,CELL-4,6);
-  ctx.strokeStyle='#f0f0f0'; ctx.lineWidth=4;
-  ctx.beginPath(); ctx.moveTo(OX+2,OY); ctx.lineTo(OX+CELL-2,OY); ctx.stroke();
-
-  // 출구 개방 (우하단 아래)
   ctx.clearRect(OX+GOAL_COL*CELL+2,OY+mazeH-1,CELL-4,6);
-  ctx.beginPath();
-  ctx.moveTo(OX+GOAL_COL*CELL+2,OY+mazeH);
-  ctx.lineTo(OX+GOAL_COL*CELL+CELL-2,OY+mazeH); ctx.stroke();
 
-  // 공
-  const bg2=ctx.createRadialGradient(
-    ball.x-ball.r*.3, ball.y-ball.r*.3, ball.r*.1,
-    ball.x, ball.y, ball.r
-  );
-  bg2.addColorStop(0,'#ff8a80'); bg2.addColorStop(.4,'#e53935'); bg2.addColorStop(1,'#7f0000');
-  ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);
-  ctx.fillStyle=bg2; ctx.fill();
-  ctx.beginPath(); ctx.arc(ball.x-ball.r*.28,ball.y-ball.r*.28,ball.r*.28,0,Math.PI*2);
-  ctx.fillStyle='rgba(255,255,255,.5)'; ctx.fill();
+  // ── 공 (기울기 방향에 따라 이미지 전환, 200% 스케일) ──
+  const ballImg = tiltX < -1.5 ? ballLeftImg : ballRightImg;
+  const ballSize = ball.r * 4;
+  if(ballImg.complete && ballImg.naturalWidth){
+    ctx.save();
+    ctx.drawImage(ballImg, ball.x-ballSize/2, ball.y-ballSize/2, ballSize, ballSize);
+    ctx.restore();
+  } else {
+    const bg2=ctx.createRadialGradient(
+      ball.x-ball.r*.3,ball.y-ball.r*.3,ball.r*.1,
+      ball.x,ball.y,ball.r
+    );
+    bg2.addColorStop(0,'#ff8a80'); bg2.addColorStop(.4,'#e53935'); bg2.addColorStop(1,'#7f0000');
+    ctx.beginPath(); ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);
+    ctx.fillStyle=bg2; ctx.fill();
+    ctx.beginPath(); ctx.arc(ball.x-ball.r*.28,ball.y-ball.r*.28,ball.r*.28,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,.5)'; ctx.fill();
+  }
 }
 
 // ════════════════════════════════════
 //  물리
 // ════════════════════════════════════
-const GRAVITY      = 12;    // 기울기 중력 가속도 (3× 이상)
-const FRICTION     = 0.88;  // 마찰 (고속 제어용)
-const BOUNCE       = 0.65;  // 벽 탄성 계수
-const MAX_SPEED    = 50;    // 최고 속도
-const BASE_GRAVITY = 0.15;  // 판이 수평일 때도 상시 작용하는 기본 중력
+const GRAVITY      = 12;
+const FRICTION     = 0.88;
+const BOUNCE       = 0.65;
+const MAX_SPEED    = 50;
+const BASE_GRAVITY = 0.15;
 
 function getWallRects(){
   const rects=[], W=3;
@@ -366,56 +435,40 @@ function resolveWall({x1,y1,x2,y2}){
 function physicsStep(){
   if(cleared) return;
 
-  // 기울기 → 중력 가속 + 상시 기본 중력
   ball.vx += Math.sin(tiltX * Math.PI/180) * GRAVITY;
   ball.vy += Math.sin(tiltY * Math.PI/180) * GRAVITY + BASE_GRAVITY;
   ball.vx *= FRICTION;
   ball.vy *= FRICTION;
 
-  // 최대 속도
   const spd=Math.hypot(ball.vx,ball.vy);
   if(spd>MAX_SPEED){ball.vx=ball.vx/spd*MAX_SPEED; ball.vy=ball.vy/spd*MAX_SPEED;}
 
   ball.x+=ball.vx; ball.y+=ball.vy;
 
-  // 외벽 클램핑
   const mg=ball.r+2;
   if(ball.x<OX+mg)       {ball.x=OX+mg;       ball.vx*=-BOUNCE;}
   if(ball.x>OX+mazeW-mg) {ball.x=OX+mazeW-mg; ball.vx*=-BOUNCE;}
   if(ball.y<OY+mg)       {ball.y=OY+mg;       ball.vy*=-BOUNCE;}
   if(ball.y>OY+mazeH-mg) {ball.y=OY+mazeH-mg; ball.vy*=-BOUNCE;}
 
-  // 벽 충돌
   for(const w of getWallRects()) resolveWall(w);
 
-  // 감성 노드 수집
-  for(const kw of KEYWORDS){
-    if(visitedNodes.has(kw.text)) continue;
-    const px=OX+kw.cx*CELL+CELL/2, py=OY+kw.cy*CELL+CELL/2;
+  // ── 코인 수집 (팝업 없음) ──
+  for(let i=0; i<COIN_DEFS.length; i++){
+    if(collectedCoins.has(i)) continue;
+    const c=COIN_DEFS[i];
+    const px=OX+c.cx*CELL+CELL/2, py=OY+c.cy*CELL+CELL/2;
     const dx=ball.x-px, dy=ball.y-py;
-    if(dx*dx+dy*dy<(ball.r+10)**2){
-      visitedNodes.add(kw.text); collectedKeywords.add(kw.text);
-      showKeyword(kw.text,px,py);
+    if(dx*dx+dy*dy < (ball.r+10)**2){
+      collectedCoins.add(i);
+      coinCount++;
+      document.getElementById('coin-count').textContent = coinCount;
     }
   }
 
-  // 탈출 체크
+  // ── 탈출 체크 ──
   const gx=OX+GOAL_COL*CELL+CELL/2, gy=OY+GOAL_ROW*CELL+CELL/2;
   if((ball.x-gx)**2+(ball.y-gy)**2 < (ball.r+10)**2) triggerClear();
-}
-
-// ════════════════════════════════════
-//  감성 노드 팝업
-// ════════════════════════════════════
-function showKeyword(text,bx,by){
-  const wrap=document.getElementById('game-wrap');
-  const el=document.createElement('div');
-  el.className='keyword-popup';
-  el.textContent=text;
-  el.style.left=Math.min(Math.max(bx-90,4),590)+'px';
-  el.style.top =(by-44)+'px';
-  wrap.appendChild(el);
-  setTimeout(()=>el.remove(),2900);
 }
 
 // ════════════════════════════════════
@@ -425,16 +478,16 @@ const tiltContainer = document.getElementById('maze-tilt-container');
 
 function applyTiltCSS(){
   // tiltX > 0 (머리 오른쪽) → rotateY(+) → 오른쪽이 앞/아래 ✓
-  // tiltY > 0 (얼굴 위로) → rotateX(+) → 아래쪽이 앞/아래 ✓
+  // Pitch: tiltY < 0 (얼굴 위로) → 윗면이 뒤로 → rotateX(+) 필요 → 부호 반전
+  //        tiltY > 0 (얼굴 아래) → 아랫면이 뒤로 → rotateX(-) 필요 → 부호 반전
   const ry = tiltX * 1.8;
-  const rx = tiltY * 1.8;
+  const rx = -tiltY * 1.8;   // ← 시각적 Pitch 방향 교정 (물리 로직은 그대로)
   tiltContainer.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
 
-  // 기울기에 따라 그림자 이동 (시각적 입체감 강화)
-  const sx = tiltX * 1.4, sy = tiltY * 1.4;
+  const sx = tiltX * 1.4, sy = -tiltY * 1.4;  // 그림자도 동일하게 반전
   canvas.style.boxShadow =
-    `${10+sx}px ${10+sy}px 34px rgba(0,0,0,.32),
-     ${-6+sx*.3}px ${-6+sy*.3}px 18px rgba(255,255,255,.65)`;
+    `${10+sx}px ${10+sy}px 48px rgba(0,0,0,.38),
+     0 0 0 1px rgba(255,255,255,.22)`;
 }
 
 // ════════════════════════════════════
@@ -442,11 +495,8 @@ function applyTiltCSS(){
 // ════════════════════════════════════
 function triggerClear(){
   if(cleared) return; cleared=true;
-  const m=Math.floor(elapsedMs/60000).toString().padStart(2,'0');
-  const s=Math.floor((elapsedMs%60000)/1000).toString().padStart(2,'0');
-  document.getElementById('clear-time-txt').textContent=`소요 시간: ${m}:${s}`;
-  document.getElementById('clear-collected-txt').textContent=
-    `수집한 감성 노드: ${collectedKeywords.size} / ${KEYWORDS.length}`;
+  document.getElementById('clear-collected-txt').textContent =
+    `습득한 총 코인 개수: ${coinCount}개`;
   setTimeout(()=>document.getElementById('clear-overlay').classList.add('show'),120);
 }
 
@@ -461,18 +511,16 @@ function lerp(a, b, t){ return a + (b-a)*t; }
 // ════════════════════════════════════
 //  메인 루프
 // ════════════════════════════════════
-const SMOOTH = 0.10;   // 보간 계수 (낮을수록 부드러움)
-const DZ     = 1.8;    // 데드존 (도)
+const SMOOTH = 0.10;
+const DZ     = 1.8;
 
 let lastRaf = 0;
 function loop(ts){
   const dt = ts - lastRaf; lastRaf = ts;
 
-  // ① Lerp 스무딩 — 매 프레임 raw 목표값으로 서서히 수렴
   tiltX = lerp(tiltX, deadzone(rawTiltX, DZ), SMOOTH);
   tiltY = lerp(tiltY, deadzone(rawTiltY, DZ), SMOOTH);
 
-  // ② 타이머
   if(!cleared){
     if(!startTime) startTime = ts;
     elapsedMs = ts - startTime;
@@ -512,7 +560,6 @@ async function initFace(){
   const statusEl=document.getElementById('cam-status');
   const camOverlay=document.getElementById('cam-overlay');
 
-  // 카메라 권한
   let stream;
   try{
     stream=await navigator.mediaDevices.getUserMedia({
@@ -528,7 +575,6 @@ async function initFace(){
     dot.style.background='#f44336'; return;
   }
 
-  // MediaPipe 초기화
   let landmarker;
   try{
     const vision=await FilesetResolver.forVisionTasks(
@@ -555,37 +601,25 @@ async function initFace(){
 
   function detectLoop(){
     const nowMs=performance.now();
-    if(nowMs-lastMs > 16){   // ~60fps cap (face detection 30fps 충분)
+    if(nowMs-lastMs > 16){
       lastMs=nowMs;
       const result=landmarker.detectForVideo(vid,nowMs);
       const lms=result.faceLandmarks?.[0];
       if(lms){
-        // ─── Roll (좌우 기울기): 눈 랜드마크 각도 기반 ───
-        // landmark 33  = 왼쪽 눈 바깥 모서리
-        // landmark 263 = 오른쪽 눈 바깥 모서리
-        // 머리를 오른쪽으로 기울이면 → 오른쪽 눈이 내려감(Y ↑) → atan2 양수
         const lEye = lms[33], rEye = lms[263];
         const rollRad = Math.atan2(rEye.y - lEye.y, rEye.x - lEye.x);
         const rollDeg = rollRad * 180 / Math.PI;
-        // 양수 rollDeg = 머리가 오른쪽으로 기울어짐 → tiltX 양수 (판도 우측으로)
         rawTiltX = Math.max(-MAX_ANGLE, Math.min(MAX_ANGLE, -rollDeg * 1.6));
 
-        // ─── Pitch (상하 기울기): 코끝-눈 상대 거리 기반 ───
-        // landmark 4   = 코 끝(Nose Tip)
-        // 기준값 대비 코끝이 눈보다 멀어지면(아래 내림) → rawTiltY 양수(판 앞쪽 아래)
-        // 기준값 대비 코끝이 눈에 가까워지면(위로 들면) → rawTiltY 음수(판 뒤쪽 아래)
         const nose = lms[4];
         const eyeCY = (lEye.y + rEye.y) / 2;
         const faceW = Math.abs(rEye.x - lEye.x) || 0.001;
-        const noseRelY = (nose.y - eyeCY) / faceW;  // 정규화된 코-눈 수직 거리
+        const noseRelY = (nose.y - eyeCY) / faceW;
 
-        // 적응형 기준값 (첫 프레임 초기화 후 매우 천천히 추종)
         if(pitchBaseline === null) pitchBaseline = noseRelY;
         else pitchBaseline = pitchBaseline * 0.997 + noseRelY * 0.003;
 
-        const pitchDev = (noseRelY - pitchBaseline) * 80; // 편차 → 각도(도)
-        // 아래 숙임 → noseRelY↑ → pitchDev > 0 → tiltY > 0 → 공 아래 ✓
-        // 위로 들기  → noseRelY↓ → pitchDev < 0 → tiltY < 0 → 공 위  ✓
+        const pitchDev = (noseRelY - pitchBaseline) * 80;
         rawTiltY = Math.max(-MAX_ANGLE, Math.min(MAX_ANGLE, pitchDev));
       }
     }
